@@ -17,10 +17,10 @@ function getListTask() {
     listTask.getTastListService()
         .then(function(rs) {
             console.log(rs.data);
-            setlocalstorage(rs.data);
-            getlocalstorage();
             isLoading = false;
             loading(isLoading);
+            setlocalstorage(rs.data);
+            getlocalstorage();
             drawList(rs.data);
         })
         .catch(function(err) {
