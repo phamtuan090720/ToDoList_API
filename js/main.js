@@ -2,7 +2,6 @@ var listTask = new TaskList();
 var validation = new Validation();
 var isLoading = false;
 getListTask();
-getlocalstorage();
 
 function loading(isLoading) {
     if (isLoading === true) {
@@ -19,6 +18,7 @@ function getListTask() {
         .then(function(rs) {
             console.log(rs.data);
             setlocalstorage(rs.data);
+            getlocalstorage();
             isLoading = false;
             loading(isLoading);
             drawList(rs.data);
