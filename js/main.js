@@ -1,24 +1,39 @@
 var listTask = new TaskList();
 var validation = new Validation();
+var isLoading = false;
 getListTask();
 getlocalstorage();
 
+function loading(isLoading) {
+    if (isLoading === true) {
+        document.body.innerHTML = document.body.innerHTML + `<div class="loader"></div>`;
+    } else {
+        document.getElementsByClassName("loader")[0].remove();
+    }
+}
+
 function getListTask() {
+    isLoading = true;
+    loading(isLoading);
     listTask.getTastListService()
         .then(function(rs) {
             console.log(rs.data);
             setlocalstorage(rs.data);
+            isLoading = false;
+            loading(isLoading);
             drawList(rs.data);
         })
         .catch(function(err) {
+            isLoading = false;
+            loading(isLoading);
             console.log(err);
         })
 };
-getEle("addItem").addEventListener("click", function() {
+
+function addItem() {
     var taskname = getEle("newTask").value;
     var isValidation = true;
     isValidation &= validation.KiemTraRong("newTask", "notiInput", "(*)Không được để rỗng") && validation.KiemTraTrungTen("newTask", "notiInput", "(*)Không được Trùng Tên Task!", listTask.arr);
-    console.log(isValidation);
     if (isValidation === 0) return;
     var task = new Task("", taskname, "todo");
     listTask.addTask(task).then(function(rs) {
@@ -31,14 +46,14 @@ getEle("addItem").addEventListener("click", function() {
             console.log(err);
             alert("Add Failed!");
         });
-});
+};
 
 function deleteTask(id) {
     listTask.deleteTask(id)
         .then(function(rs) {
             console.log(rs.data);
-            alert("DELETE Succsess!");
             getListTask();
+            alert("DELETE Succsess!");
         })
         .catch(function(err) {
             console.log(err);
@@ -114,6 +129,7 @@ function resetInput(id) {
 function getEle(id) {
     return document.getElementById(id);
 };
+
 
 function getlocalstorage() {
     if (localStorage.getItem("ListTask")) {
